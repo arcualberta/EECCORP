@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 
 EECCORP/PrivateSettings.config
+EECCORP/client_secret.json
