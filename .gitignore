@@ -261,4 +261,3 @@ __pycache__/
 *.pyc
 
 EECCORP/PrivateSettings.config
-EECCORP/ConnectionStrings.config
