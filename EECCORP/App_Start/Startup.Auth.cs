@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using EECCORP.Models;
+using System.Configuration;
 
 namespace EECCORP
 {
@@ -58,11 +59,11 @@ namespace EECCORP
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = ConfigurationManager.AppSettings["Authentication:Google:ClientId"],
+                ClientSecret = ConfigurationManager.AppSettings["Authentication:Google:Secret"]
+            });
         }
     }
 }
