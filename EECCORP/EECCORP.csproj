@@ -229,6 +229,10 @@
     <Compile Include="Migrations\201711231602337_CreateIdentityModel.Designer.cs">
       <DependentUpon>201711231602337_CreateIdentityModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711231659105_CreateRegistration.cs" />
+    <Compile Include="Migrations\201711231659105_CreateRegistration.Designer.cs">
+      <DependentUpon>201711231659105_CreateRegistration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -250,6 +254,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="PrivateSettings.config" />
+    <Content Include="PrivateSettings-BACKUP.config" />
+    <Content Include="ConnectionStrings.config" />
+    <Content Include="ConnectionStrings-BACKUP.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -317,6 +325,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201711231602337_CreateIdentityModel.resx">
       <DependentUpon>201711231602337_CreateIdentityModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711231659105_CreateRegistration.resx">
+      <DependentUpon>201711231659105_CreateRegistration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
