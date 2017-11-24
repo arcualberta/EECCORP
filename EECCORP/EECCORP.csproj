@@ -237,9 +237,14 @@
     <Compile Include="Migrations\201711231659105_CreateRegistration.Designer.cs">
       <DependentUpon>201711231659105_CreateRegistration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711232017038_AddIsEligibleToIdentity.cs" />
+    <Compile Include="Migrations\201711232017038_AddIsEligibleToIdentity.Designer.cs">
+      <DependentUpon>201711232017038_AddIsEligibleToIdentity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\EventsViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Registration.cs" />
@@ -313,6 +318,7 @@
     <Content Include="Views\Registrations\Edit.cshtml" />
     <Content Include="Views\Registrations\Index.cshtml" />
     <Content Include="Views\Events\Index.cshtml" />
+    <Content Include="Views\Events\Eligibility.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -338,6 +344,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711231659105_CreateRegistration.resx">
       <DependentUpon>201711231659105_CreateRegistration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711232017038_AddIsEligibleToIdentity.resx">
+      <DependentUpon>201711232017038_AddIsEligibleToIdentity.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

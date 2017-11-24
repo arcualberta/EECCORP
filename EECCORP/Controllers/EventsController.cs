@@ -14,19 +14,40 @@ using System.Configuration;
 using EECCORP.Models;
 using EECCORP.Extensions;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace EECCORP.Controllers
 {
     public class EventsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserStore<ApplicationUser> userStore;
+        private UserManager<ApplicationUser> userManager;
+
+        public EventsController()
+        {
+            InitializeUserManager();
+        }
+
 
         // GET: Event
         public ActionResult Index()
         {
             //XXX Get registered events
-            ViewBag.events = GetEvents();
-            return View();
+            
+            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            ApplicationUser user = userManager.FindById(userId);
+            if (user.IsEligible)
+            {
+                ViewBag.events = GetEvents();
+                return View();
+            } else
+            {
+                IsEligibleViewModel eligible = new IsEligibleViewModel();
+                //return View("Eligibility", eligible);
+                return RedirectToAction("Eligibility", eligible);
+            }            
         }
 
         // POST: Event
@@ -43,6 +64,28 @@ namespace EECCORP.Controllers
             db.SaveChanges();
             ViewBag.events = GetEvents();
             //XXX Show registered events
+            return View();
+        }
+
+        // GET: Eligibility
+        public ActionResult Eligibility()
+        {
+            IsEligibleViewModel eligible = new IsEligibleViewModel();
+            return View(eligible);
+        }
+
+        // POST: Eligibility
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Eligibility(IsEligibleViewModel response)
+        {
+            if (response.IsEnrolled && response.IsFoAStudent)
+            {
+                ApplicationUser user = userManager.FindById(User.Identity.GetUserId());
+                user.IsEligible = true;
+                userManager.UpdateAsync(user);
+                return RedirectToAction("Index");
+            }
             return View();
         }
 
@@ -98,6 +141,13 @@ namespace EECCORP.Controllers
                 }
             }
             return responseEvents;
+        }
+
+        private void InitializeUserManager()
+        {
+            userStore = new UserStore<ApplicationUser>(db);
+            userManager = new UserManager<ApplicationUser>(userStore);
+            userStore.AutoSaveChanges = true;
         }
     }
 }
