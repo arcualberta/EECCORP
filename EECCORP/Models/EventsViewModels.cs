@@ -12,4 +12,10 @@ namespace EECCORP.Models
         public string IsEnrolledQuestion { get; set; } = "Are you currently enrolled in, or have you previously taken any Economics courses at the UofA?";
         public bool IsEnrolled { get; set; } = false;
     }
+
+    public class Event2
+    {
+        public string Description { get; set; }
+        //public DateTime 
+    }
 }
