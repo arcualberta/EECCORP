@@ -241,6 +241,14 @@
     <Compile Include="Migrations\201711232017038_AddIsEligibleToIdentity.Designer.cs">
       <DependentUpon>201711232017038_AddIsEligibleToIdentity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711242307085_CreateEvent.cs" />
+    <Compile Include="Migrations\201711242307085_CreateEvent.Designer.cs">
+      <DependentUpon>201711242307085_CreateEvent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711271831028_AddSumaryToEvent.cs" />
+    <Compile Include="Migrations\201711271831028_AddSumaryToEvent.Designer.cs">
+      <DependentUpon>201711271831028_AddSumaryToEvent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -319,6 +327,7 @@
     <Content Include="Views\Registrations\Index.cshtml" />
     <Content Include="Views\Events\Index.cshtml" />
     <Content Include="Views\Events\Eligibility.cshtml" />
+    <Content Include="Views\Events\EditorTemplates\Event.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -347,6 +356,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711232017038_AddIsEligibleToIdentity.resx">
       <DependentUpon>201711232017038_AddIsEligibleToIdentity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711242307085_CreateEvent.resx">
+      <DependentUpon>201711242307085_CreateEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711271831028_AddSumaryToEvent.resx">
+      <DependentUpon>201711271831028_AddSumaryToEvent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

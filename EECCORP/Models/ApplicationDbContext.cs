@@ -19,5 +19,7 @@ namespace EECCORP.Models
         }
 
         public System.Data.Entity.DbSet<EECCORP.Models.Registration> Registrations { get; set; }
+
+        public System.Data.Entity.DbSet<EECCORP.Models.Event> Events { get; set; }
     }
 }

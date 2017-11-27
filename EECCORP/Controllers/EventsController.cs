@@ -16,36 +16,58 @@ using EECCORP.Extensions;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Xml;
 
 namespace EECCORP.Controllers
 {
     public class EventsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-        private UserStore<ApplicationUser> userStore;
-        private UserManager<ApplicationUser> userManager;
 
-        public EventsController()
-        {
-            InitializeUserManager();
+        private ApplicationDbContext _Db;
+        private UserStore<ApplicationUser> _UserStore;
+        private UserManager<ApplicationUser> _UserManager;
+
+        private ApplicationDbContext Db {
+            get
+            {
+                if (_Db == null)
+                    _Db = new ApplicationDbContext();
+                return _Db;
+            }
+        }
+        private UserStore<ApplicationUser> UserStore {
+            get
+            {
+                if (_UserStore == null)
+                    _UserStore = new UserStore<ApplicationUser>(Db);
+                return _UserStore;
+            }
         }
 
-
+        private UserManager<ApplicationUser> UserManager
+        {
+            get
+            {
+                if (_UserManager == null)
+                    _UserManager = new UserManager<ApplicationUser>(UserStore);
+                return _UserManager;
+            }
+        }
+     
         // GET: Event
         public ActionResult Index()
         {
             //XXX Get registered events
             
             string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            ApplicationUser user = userManager.FindById(userId);
+            ApplicationUser user = UserManager.FindById(userId);
             if (user.IsEligible)
             {
-                ViewBag.events = GetEvents();
-                return View();
+                List<Models.Event> events = GetEvents();
+                return View(events);
             } else
             {
                 IsEligibleViewModel eligible = new IsEligibleViewModel();
-                //return View("Eligibility", eligible);
                 return RedirectToAction("Eligibility", eligible);
             }            
         }
@@ -59,9 +81,9 @@ namespace EECCORP.Controllers
             {
                 Registration registration = registrations[index];
                 registration.UserId = User.Identity.GetUserId();
-                db.Registrations.Add(registration);
+                Db.Registrations.Add(registration);
             }
-            db.SaveChanges();
+            Db.SaveChanges();
             ViewBag.events = GetEvents();
             //XXX Show registered events
             return View();
@@ -81,20 +103,20 @@ namespace EECCORP.Controllers
         {
             if (response.IsEnrolled && response.IsFoAStudent)
             {
-                ApplicationUser user = userManager.FindById(User.Identity.GetUserId());
+                ApplicationUser user = UserManager.FindById(User.Identity.GetUserId());
                 user.IsEligible = true;
-                userManager.UpdateAsync(user);
+                UserManager.UpdateAsync(user);
                 return RedirectToAction("Index");
             }
             return View();
         }
 
-        private List<Event> GetEvents()
+        private List<Models.Event> GetEvents()
         {
             string[] Scopes = { CalendarService.Scope.CalendarReadonly };
             string ApplicationName = ConfigurationManager.AppSettings["Application:Name"];
 
-            UserCredential credential;        
+            UserCredential credential;
 
             FileStream stream = new FileStream(Server.MapPath(@"~/client_secret.json"), FileMode.Open, FileAccess.Read);
 
@@ -131,23 +153,20 @@ namespace EECCORP.Controllers
             // List events.
             Events events = request.Execute();
 
-            List<Event> responseEvents = new List<Event>();
+            List<Models.Event> responseEvents = new List<Models.Event>();
             if (events.Items != null && events.Items.Count > 0)
             {
                 foreach (var eventItem in events.Items)
                 {
-                    responseEvents.Add(eventItem);
-                   
+                    Models.Event currentEvent = new Models.Event();
+                    currentEvent.Id = eventItem.Id;
+                    currentEvent.Summary = eventItem.Summary;
+                    currentEvent.Description = eventItem.Description;
+                    currentEvent.Start = XmlConvert.ToDateTime(eventItem.Start.DateTimeRaw, XmlDateTimeSerializationMode.Local);                    
+                    responseEvents.Add(currentEvent);
                 }
             }
             return responseEvents;
-        }
-
-        private void InitializeUserManager()
-        {
-            userStore = new UserStore<ApplicationUser>(db);
-            userManager = new UserManager<ApplicationUser>(userStore);
-            userStore.AutoSaveChanges = true;
         }
     }
 }

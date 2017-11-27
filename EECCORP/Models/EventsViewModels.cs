@@ -13,9 +13,13 @@ namespace EECCORP.Models
         public bool IsEnrolled { get; set; } = false;
     }
 
-    public class Event2
+    public class Event
     {
+        public string Summary { get; set; }
         public string Description { get; set; }
+        public DateTime Start { get; set; }
+        public string Id { get; set; }
+        public bool IsSelected { get; set; }
         //public DateTime 
     }
 }

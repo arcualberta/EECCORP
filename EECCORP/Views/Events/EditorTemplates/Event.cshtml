@@ -1,0 +1,16 @@
+﻿@model EECCORP.Models.Event
+
+<div>
+    <span>
+        <input type="checkbox" name="selected" />
+        <input type="hidden" value="@Model.Id" />
+    </span>
+    <span>
+        <b>
+            @Html.Raw(Model.Summary)
+        </b>
+    </span>
+    <span>
+        @Html.Raw(Model.Start.ToShortDateString())
+    </span>
+</div>
