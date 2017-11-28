@@ -249,6 +249,10 @@
     <Compile Include="Migrations\201711271831028_AddSumaryToEvent.Designer.cs">
       <DependentUpon>201711271831028_AddSumaryToEvent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711272022478_AddWeekToEvent.cs" />
+    <Compile Include="Migrations\201711272022478_AddWeekToEvent.Designer.cs">
+      <DependentUpon>201711272022478_AddWeekToEvent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -328,6 +332,8 @@
     <Content Include="Views\Events\Index.cshtml" />
     <Content Include="Views\Events\Eligibility.cshtml" />
     <Content Include="Views\Events\EditorTemplates\Event.cshtml" />
+    <Content Include="Views\Shared\_Layout - Copy.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial - Copy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -362,6 +368,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711271831028_AddSumaryToEvent.resx">
       <DependentUpon>201711271831028_AddSumaryToEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711272022478_AddWeekToEvent.resx">
+      <DependentUpon>201711272022478_AddWeekToEvent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

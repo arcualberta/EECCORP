@@ -17,6 +17,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Xml;
+using System.Globalization;
 
 namespace EECCORP.Controllers
 {
@@ -152,8 +153,11 @@ namespace EECCORP.Controllers
 
             // List events.
             Events events = request.Execute();
+            CultureInfo cultureInfo = new CultureInfo("en-ca");
+            System.Globalization.Calendar calendar = cultureInfo.DateTimeFormat.Calendar;
 
             List<Models.Event> responseEvents = new List<Models.Event>();
+
             if (events.Items != null && events.Items.Count > 0)
             {
                 foreach (var eventItem in events.Items)
@@ -162,7 +166,13 @@ namespace EECCORP.Controllers
                     currentEvent.Id = eventItem.Id;
                     currentEvent.Summary = eventItem.Summary;
                     currentEvent.Description = eventItem.Description;
-                    currentEvent.Start = XmlConvert.ToDateTime(eventItem.Start.DateTimeRaw, XmlDateTimeSerializationMode.Local);                    
+                    currentEvent.Start = XmlConvert.ToDateTime(eventItem.Start.DateTimeRaw, XmlDateTimeSerializationMode.Local);
+                    
+                    int currentWeek = calendar.GetWeekOfYear(currentEvent.Start, 
+                        CalendarWeekRule.FirstDay,
+                        DayOfWeek.Sunday);
+                    
+                    currentEvent.Week = currentWeek;
                     responseEvents.Add(currentEvent);
                 }
             }

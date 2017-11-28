@@ -20,6 +20,7 @@ namespace EECCORP.Models
         public DateTime Start { get; set; }
         public string Id { get; set; }
         public bool IsSelected { get; set; }
+        public int Week { get; set; }
         //public DateTime 
     }
 }

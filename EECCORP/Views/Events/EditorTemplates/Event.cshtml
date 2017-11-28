@@ -1,8 +1,8 @@
 ﻿@model EECCORP.Models.Event
 
-<div>
+<div class="week week-@Model.Week">
     <span>
-        <input type="checkbox" name="selected" />
+        <input type="checkbox" name="selected" class="event-checkbox" />
         <input type="hidden" value="@Model.Id" />
     </span>
     <span>

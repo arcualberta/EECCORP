@@ -5,6 +5,55 @@
     ViewBag.Title = "Index";
 }
 
+
+@section scripts {
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".event-checkbox").change(function () {
+            checkTwoEventsPerWeek()
+        })
+
+        var checkWeek = function (elements) {
+            var checkedElements = $(elements).find(".event-checkbox:checked")
+
+            // only allow 2 checked elements at a time
+            if (checkedElements.length < 2) {
+                $(elements).find(".event-checkbox").attr("disabled", false)
+            } else {
+                $(elements).find(".event-checkbox:not(:checked)").attr("disabled", true)
+            }
+        }
+
+        var checkTwoEventsPerWeek = function () {
+            
+            var currentWeek = ""
+            var weekElements = []
+            
+            $(".week").each(function (index, element) {
+                var thisWeek = $(element).attr("class")
+                if (currentWeek != thisWeek) {
+
+                    if (currentWeek.length != 0) {
+                        checkWeek(weekElements)
+                    }
+
+                    currentWeek = thisWeek
+                    weekElements = []
+                }
+                
+                weekElements.push(element)
+                
+            })
+            // Check last week elements
+            checkWeek(weekElements);
+        }
+
+    })
+</script>  
+
+}
+
 <h2>Index</h2>
 
 @using (Html.BeginForm())
@@ -22,6 +71,17 @@
         </div>
     </div>
 
+    @*<script type="text/javascript">
+    $(document).ready(function () {
+        console.log("test")
+        $(".event-checkbox").change(function () {
+            if (this.checked) {
+                console.log("check")
+            } else {
+                console.log("unchecked")
+            }
+        })
 
-
-                            }
+    })
+    </script>*@
+}
