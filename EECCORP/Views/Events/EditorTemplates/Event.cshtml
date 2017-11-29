@@ -2,8 +2,8 @@
 
 <div class="week week-@Model.Week">
     <span>
-        <input type="checkbox" name="selected" class="event-checkbox" />
-        <input type="hidden" value="@Model.Id" />
+        @Html.CheckBoxFor(m => m.IsSelected, new { @class = "event-checkbox" })
+        @Html.HiddenFor(m => m.Id)
     </span>
     <span>
         <b>

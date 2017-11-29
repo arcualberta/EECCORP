@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<EECCORP.Models.Event>
 
-
 @{
     ViewBag.Title = "Index";
 }
@@ -48,6 +47,8 @@
             // Check last week elements
             checkWeek(weekElements);
         }
+
+        checkTwoEventsPerWeek();
 
     })
 </script>  

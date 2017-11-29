@@ -27,6 +27,9 @@ namespace EECCORP.Controllers
         private ApplicationDbContext _Db;
         private UserStore<ApplicationUser> _UserStore;
         private UserManager<ApplicationUser> _UserManager;
+        private CultureInfo CultureInfo = new CultureInfo("en-ca");
+        private System.Globalization.Calendar _Calendar;
+
 
         private ApplicationDbContext Db {
             get
@@ -54,6 +57,18 @@ namespace EECCORP.Controllers
                 return _UserManager;
             }
         }
+
+        private System.Globalization.Calendar Calendar
+        {
+            get
+            {
+                if (_Calendar == null)
+                {
+                    _Calendar = CultureInfo.DateTimeFormat.Calendar;
+                }
+                return _Calendar;
+            }
+        }
      
         // GET: Event
         public ActionResult Index()
@@ -65,6 +80,12 @@ namespace EECCORP.Controllers
             if (user.IsEligible)
             {
                 List<Models.Event> events = GetEvents();
+                List<Registration> registrations = new List<Registration>();
+                foreach (Models.Event currentEvent in events)
+                {
+                    Registration registration = Db.Registrations.SingleOrDefault(i => i.EventId == currentEvent.Id);
+                    currentEvent.IsSelected = registration != null;                    
+                }
                 return View(events);
             } else
             {
@@ -73,21 +94,79 @@ namespace EECCORP.Controllers
             }            
         }
 
+        private int GetEventWeek(List<Models.Event> events, Models.Event currentEvent)
+        {
+
+            return 0;
+        }
+
         // POST: Event
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(Registration[] registrations, int[] selected)
+        public ActionResult Index(Models.Event[] frontEndEvents)
         {
-            foreach (int index in selected)
+            Dictionary<int, int> previousRegistrations = new Dictionary<int, int>();
+            string userId = User.Identity.GetUserId();
+            List<Models.Event> events = GetEvents();
+            bool onlyTwoEventsPerWeek = true;
+
+            foreach (Models.Event currentEvent in frontEndEvents)
             {
-                Registration registration = registrations[index];
-                registration.UserId = User.Identity.GetUserId();
-                Db.Registrations.Add(registration);
+
+                Models.Registration prevRegistration = Db.Registrations.SingleOrDefault(i => i.UserId == userId && i.EventId == currentEvent.Id);
+                if (currentEvent.IsSelected)
+                {
+                    // check only 2 registrations per week
+                    // process week from fetched events
+                    DateTime start = GetEventStart(events, currentEvent);
+                    int currentWeek = Calendar.GetWeekOfYear(start,
+                       CalendarWeekRule.FirstDay,
+                       DayOfWeek.Sunday);
+                    if (!previousRegistrations.ContainsKey(currentWeek))
+                    {
+                        previousRegistrations[currentWeek] = 0;
+                    }
+
+                    ++previousRegistrations[currentWeek];
+
+                    if (previousRegistrations[currentWeek] > 2)
+                    {
+                        onlyTwoEventsPerWeek = false;
+                        break;
+                    }
+
+                    if (prevRegistration == null)
+                    {
+                        Registration registration = new Registration
+                        {
+                            UserId = userId,
+                            EventId = currentEvent.Id
+                        };
+                        
+                        Db.Registrations.Add(registration);
+                    }
+                } else
+                {
+                    if (prevRegistration != null)
+                    {
+                        Db.Registrations.Remove(prevRegistration);
+                    }
+                }
             }
-            Db.SaveChanges();
-            ViewBag.events = GetEvents();
-            //XXX Show registered events
-            return View();
+
+            //Db.SaveChanges();
+            // Save if we only have 2 events per week
+            if (onlyTwoEventsPerWeek)
+            {
+                Db.SaveChanges();
+            }
+            else
+            {
+                // XXX Handle gracefully              
+            }
+
+            return RedirectToAction("Index");
+
         }
 
         // GET: Eligibility
@@ -148,13 +227,12 @@ namespace EECCORP.Controllers
             request.TimeMax = start.AddDays(21);
             request.ShowDeleted = false;
             request.SingleEvents = true;
-            //request.MaxResults = 10;
             request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
             // List events.
             Events events = request.Execute();
-            CultureInfo cultureInfo = new CultureInfo("en-ca");
-            System.Globalization.Calendar calendar = cultureInfo.DateTimeFormat.Calendar;
+            //CultureInfo cultureInfo = new CultureInfo("en-ca");
+            //System.Globalization.Calendar calendar = cultureInfo.DateTimeFormat.Calendar;
 
             List<Models.Event> responseEvents = new List<Models.Event>();
 
@@ -168,7 +246,7 @@ namespace EECCORP.Controllers
                     currentEvent.Description = eventItem.Description;
                     currentEvent.Start = XmlConvert.ToDateTime(eventItem.Start.DateTimeRaw, XmlDateTimeSerializationMode.Local);
                     
-                    int currentWeek = calendar.GetWeekOfYear(currentEvent.Start, 
+                    int currentWeek = Calendar.GetWeekOfYear(currentEvent.Start, 
                         CalendarWeekRule.FirstDay,
                         DayOfWeek.Sunday);
                     
@@ -177,6 +255,19 @@ namespace EECCORP.Controllers
                 }
             }
             return responseEvents;
+        }
+
+        private DateTime GetEventStart(List<Models.Event> events, Models.Event currentEvent)
+        {
+            foreach(Models.Event thisEvent in events)
+            {
+                //if(thisEvent.Id)
+                if(thisEvent.Id == currentEvent.Id)
+                {
+                    return thisEvent.Start;
+                }
+            }
+            return new DateTime(0, 0, 0);
         }
     }
 }
