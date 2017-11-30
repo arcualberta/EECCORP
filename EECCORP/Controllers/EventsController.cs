@@ -18,6 +18,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Xml;
 using System.Globalization;
+using EECCORP.Services;
 
 namespace EECCORP.Controllers
 {
@@ -29,47 +30,15 @@ namespace EECCORP.Controllers
         private UserManager<ApplicationUser> _UserManager;
         private CultureInfo CultureInfo = new CultureInfo("en-ca");
         private System.Globalization.Calendar _Calendar;
+        private GoogleService _GoogleService;
+
+        private ApplicationDbContext Db { get { if (_Db == null) _Db = new ApplicationDbContext(); return _Db; } }
+        private UserStore<ApplicationUser> UserStore { get { if (_UserStore == null) _UserStore = new UserStore<ApplicationUser>(Db); return _UserStore; } }
+        private UserManager<ApplicationUser> UserManager { get { if (_UserManager == null) _UserManager = new UserManager<ApplicationUser>(UserStore); return _UserManager; } }
+        private System.Globalization.Calendar Calendar { get { if (_Calendar == null) { _Calendar = CultureInfo.DateTimeFormat.Calendar; } return _Calendar; } }
+        private GoogleService GoogleService { get { if (_GoogleService == null) { _GoogleService = new GoogleService(HttpContext); } return _GoogleService; } }
 
 
-        private ApplicationDbContext Db {
-            get
-            {
-                if (_Db == null)
-                    _Db = new ApplicationDbContext();
-                return _Db;
-            }
-        }
-        private UserStore<ApplicationUser> UserStore {
-            get
-            {
-                if (_UserStore == null)
-                    _UserStore = new UserStore<ApplicationUser>(Db);
-                return _UserStore;
-            }
-        }
-
-        private UserManager<ApplicationUser> UserManager
-        {
-            get
-            {
-                if (_UserManager == null)
-                    _UserManager = new UserManager<ApplicationUser>(UserStore);
-                return _UserManager;
-            }
-        }
-
-        private System.Globalization.Calendar Calendar
-        {
-            get
-            {
-                if (_Calendar == null)
-                {
-                    _Calendar = CultureInfo.DateTimeFormat.Calendar;
-                }
-                return _Calendar;
-            }
-        }
-     
         // GET: Event
         public ActionResult Index()
         {
@@ -79,7 +48,7 @@ namespace EECCORP.Controllers
             ApplicationUser user = UserManager.FindById(userId);
             if (user.IsEligible)
             {
-                List<Models.Event> events = GetEvents();
+                List<Models.Event> events = GoogleService.GetEvents();
                 List<Registration> registrations = new List<Registration>();
                 foreach (Models.Event currentEvent in events)
                 {
@@ -94,12 +63,6 @@ namespace EECCORP.Controllers
             }            
         }
 
-        private int GetEventWeek(List<Models.Event> events, Models.Event currentEvent)
-        {
-
-            return 0;
-        }
-
         // POST: Event
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,7 +70,7 @@ namespace EECCORP.Controllers
         {
             Dictionary<int, int> previousRegistrations = new Dictionary<int, int>();
             string userId = User.Identity.GetUserId();
-            List<Models.Event> events = GetEvents();
+            List<Models.Event> events = GoogleService.GetEvents();
             bool onlyTwoEventsPerWeek = true;
 
             foreach (Models.Event currentEvent in frontEndEvents)
@@ -190,73 +153,7 @@ namespace EECCORP.Controllers
             }
             return View();
         }
-
-        private List<Models.Event> GetEvents()
-        {
-            string[] Scopes = { CalendarService.Scope.CalendarReadonly };
-            string ApplicationName = ConfigurationManager.AppSettings["Application:Name"];
-
-            UserCredential credential;
-
-            FileStream stream = new FileStream(Server.MapPath(@"~/client_secret.json"), FileMode.Open, FileAccess.Read);
-
-            string credPath = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.Personal);
-            credPath = Path.Combine(credPath, ".credentials/calendar-dotnet-quickstart.json");
-
-            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-
-            // Create Google Calendar API service.
-            var service = new CalendarService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
-
-            string calendarId = ConfigurationManager.AppSettings["Google:CalendarId"];
-
-            // Define parameters of request.
-            EventsResource.ListRequest request = service.Events.List(calendarId);
-            DateTime start = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
-            request.TimeMin = start;
-            request.TimeMax = start.AddDays(21);
-            request.ShowDeleted = false;
-            request.SingleEvents = true;
-            request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-
-            // List events.
-            Events events = request.Execute();
-            //CultureInfo cultureInfo = new CultureInfo("en-ca");
-            //System.Globalization.Calendar calendar = cultureInfo.DateTimeFormat.Calendar;
-
-            List<Models.Event> responseEvents = new List<Models.Event>();
-
-            if (events.Items != null && events.Items.Count > 0)
-            {
-                foreach (var eventItem in events.Items)
-                {
-                    Models.Event currentEvent = new Models.Event();
-                    currentEvent.Id = eventItem.Id;
-                    currentEvent.Summary = eventItem.Summary;
-                    currentEvent.Description = eventItem.Description;
-                    currentEvent.Start = XmlConvert.ToDateTime(eventItem.Start.DateTimeRaw, XmlDateTimeSerializationMode.Local);
-                    
-                    int currentWeek = Calendar.GetWeekOfYear(currentEvent.Start, 
-                        CalendarWeekRule.FirstDay,
-                        DayOfWeek.Sunday);
-                    
-                    currentEvent.Week = currentWeek;
-                    responseEvents.Add(currentEvent);
-                }
-            }
-            return responseEvents;
-        }
-
+        
         private DateTime GetEventStart(List<Models.Event> events, Models.Event currentEvent)
         {
             foreach(Models.Event thisEvent in events)
