@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EECCORP.Extensions;
+
 
 namespace EECCORP.Controllers
 {
@@ -18,25 +20,35 @@ namespace EECCORP.Controllers
         // GET: Dashboard
         public ActionResult Index()
         {
-            List<Models.Event> events = GoogleService.GetEvents();
-            SetViewbag(events);
+            DateTime start = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            DateTime end = start.AddDays(21);
+            List<Models.Event> events = GoogleService.GetEvents(start, end);
+            SetViewbag(events, start, end);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Index(DateTime? start, DateTime? end)
+        public ActionResult Index(DateTime? start = null, DateTime? end = null)
         {
-            List<Models.Event> events = GoogleService.GetEvents(start, end);
-            SetViewbag(events);
+            start = start == null ? DateTime.Now.StartOfWeek(DayOfWeek.Monday) : (DateTime)start;
+            end = end == null ? ((DateTime)start).AddDays(21) : (DateTime)end;
+
+            List<Models.Event> events = GoogleService.GetEvents((DateTime)start, (DateTime)end);
+            SetViewbag(events, start, end);
+
             return View();
         }
 
-        private void SetViewbag(List<Models.Event> events)
+        private void SetViewbag(List<Models.Event> events, DateTime? start = null, DateTime? end = null)
         {
             ViewBag.events = events;
             ViewBag.registrations = GetRegistrations(events);
             ViewBag.users = GetEventsUsers(ViewBag.registrations);
+
+
+            ViewBag.start = start != null ? ((DateTime)start).ToString("dd/M/yyyy") : null;
+            ViewBag.end = end != null ? ((DateTime)end).ToString("dd/M/yyyy") : null;
         }
 
         private List<Registration> GetRegistrations(List<Models.Event>events)

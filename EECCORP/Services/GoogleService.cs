@@ -46,10 +46,17 @@ namespace EECCORP.Services
             }
         }
 
-        public List<Models.Event> GetEvents(DateTime? start = null, DateTime? end = null)
+        public List<Models.Event> GetEvents()
         {
-            start = start == null ? DateTime.Now.StartOfWeek(DayOfWeek.Monday) : ((DateTime)start).StartOfWeek(DayOfWeek.Monday);
-            end = end == null ? ((DateTime)start).AddDays(21) : (DateTime)end; 
+            DateTime start = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            DateTime end = start.AddDays(21);
+            return this.GetEvents(start, end);
+        }
+
+        public List<Models.Event> GetEvents(DateTime start, DateTime end)
+        {
+            //start = start == null ? DateTime.Now.StartOfWeek(DayOfWeek.Monday) : (DateTime)start;
+            //end = end == null ? ((DateTime)start).AddDays(21) : (DateTime)end; 
             
             string[] Scopes = { CalendarService.Scope.CalendarReadonly };
             string ApplicationName = ConfigurationManager.AppSettings["Application:Name"];

@@ -6,83 +6,8 @@
 
     <script>
         $().ready(function () {
-            var events = @Html.Raw(Json.Encode(ViewBag.events))
-            var registrations = @Html.Raw(Json.Encode(ViewBag.registrations))
-            var users = @Html.Raw(Json.Encode(ViewBag.users))
-            var reflectedEvents = reflectArray(events, "Id")
-            var reflectedUsers = reflectArray(users, "Id")            
-
-            // cleanup event dates from format "/Date(1512669600000)/"
-            prepareEvents(reflectedEvents)
-            prepareUsers(reflectedUsers)
-            connectEventsUsers(reflectedEvents, reflectedUsers, registrations)
-            showEvents(reflectedEvents)
-
             $.fn.datepicker.defaults.format = "dd/mm/yyyy";
-            $('.input-daterange').datepicker({
-            });
-
-            function showEvents(events) {
-                var table = $("<table>")
-
-                $.each(events, function (key, value) {
-                    var tr = $("<tr>")
-                    var tdName = $("<td>").append(value.Summary)
-                    var tdDate = $("<td>").append(value.Start.toLocaleDateString())
-                    var tdUsers = $("<td>").append(value.users.length)
-                    
-                    tr.append(tdName)                    
-                    tr.append(tdDate)                    
-                    tr.append(tdUsers)                    
-                                        
-                    table.append(tr)
-                    
-                })
-                $("#report-container").append(table)
-            }
-            
-            function prepareEvents(events) {
-                $.each(events, function (key, value) {
-                    var ticks = parseInt(value.Start.replace(/\D+/g, ''))
-                    value.Start = new Date(ticks)
-                    value.users = []
-                })
-            }
-
-            function prepareUsers(users) {
-                $.each(users, function (key, value) {                    
-                    value.events = []
-                })
-            }
-
-            function reflectArray(array, key) {
-                // ES6
-                //return Object.assign(...array.map(d => ({ [d[key]]: d })))
-                result = {}
-                $.each(array, function (i, v) {
-                    result[v[key]] = v
-                })
-                return result
-            }
-
-            function addToArray(destination, key, value) {
-                if (!destination[key]) {
-                    destination[key] = []
-                }
-                destination[key].push(value)
-            }
-
-            function connectEventsUsers(events, users, registrations) {
-                
-
-                $.each(registrations, function (i, registration) {
-                    var event = events[registration.EventId]
-                    var user = users[registration.UserId]                    
-
-                    addToArray(event, "users", user.Id)
-                    addToArray(user, "events", event.Id)
-                })                
-            }
+            $('.input-daterange').datepicker({});
         })
 
 
@@ -94,20 +19,29 @@
 @using (Html.BeginForm("", "Dashboard", FormMethod.Post, new { @class = "form-inline" }))
 {
     @Html.AntiForgeryToken()
-
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
                 <div class="input-daterange input-group" id="datepicker">
-                    <input type="text" class="input-sm form-control" name="start" placeholder="Start"/>
-                    <span class="input-group-addon">to</span>
-                    <input type="text" class="input-sm form-control" name="end" placeholder="End"/>
+                    <input type="text" class="input-sm form-control" name="start" placeholder="Start" value="@(ViewBag.start)"/>
+<span class="input-group-addon">to</span>
+                    <input type="text" class="input-sm form-control" name="end" placeholder="End" value="@(ViewBag.end)"/>
                 </div>
                 <div>
                     <button class="btn btn-primary">Generate</button>
                 </div>
             </div>
             <div id="report-container">
+                <ul>
+                    @foreach (var currentEvent in ViewBag.events)
+                    {
+                    <li>
+                        <b>@currentEvent.Summary</b>
+                        <span>@currentEvent.Start.ToString("dd/M/yyyy")</span>
+                    </li>
+                    }
+                    
+                </ul>
             </div>
         </div>
     </div>
