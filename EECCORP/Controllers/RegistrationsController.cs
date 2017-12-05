@@ -13,7 +13,7 @@ namespace EECCORP.Controllers
     public class RegistrationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        
         // GET: Registrations
         public ActionResult Index()
         {
