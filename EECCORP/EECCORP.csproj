@@ -254,6 +254,10 @@
     <Compile Include="Migrations\201711272022478_AddWeekToEvent.Designer.cs">
       <DependentUpon>201711272022478_AddWeekToEvent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712061717532_AddRelationUserRegistrations.cs" />
+    <Compile Include="Migrations\201712061717532_AddRelationUserRegistrations.Designer.cs">
+      <DependentUpon>201712061717532_AddRelationUserRegistrations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -458,6 +462,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711272022478_AddWeekToEvent.resx">
       <DependentUpon>201711272022478_AddWeekToEvent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712061717532_AddRelationUserRegistrations.resx">
+      <DependentUpon>201712061717532_AddRelationUserRegistrations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

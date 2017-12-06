@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace EECCORP.Models
 {
@@ -10,7 +11,13 @@ namespace EECCORP.Models
     public class ApplicationUser : IdentityUser
     {
 
-        public bool IsEligible { set; get; } = false;
+        public bool IsEligible { get; set; } = false;
+        public virtual ICollection<Registration> Registrations { get; set; }
+
+        public ApplicationUser() : base()
+        {
+            this.Registrations = new List<Registration>();
+        }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

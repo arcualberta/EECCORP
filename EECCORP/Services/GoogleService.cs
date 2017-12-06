@@ -46,7 +46,7 @@ namespace EECCORP.Services
             }
         }
 
-        public List<Models.Event> GetEvents()
+        public List<Models.Event> GetEventsFromWindow()
         {
             DateTime start = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
             DateTime end = start.AddDays(21);

@@ -42,44 +42,25 @@ namespace EECCORP.Controllers
 
         private void SetViewbag(List<Models.Event> events, DateTime? start = null, DateTime? end = null)
         {
-            ViewBag.events = events;
-            ViewBag.registrations = GetRegistrations(events);
-            ViewBag.users = GetEventsUsers(ViewBag.registrations);
+            ViewBag.events = AddUsersToEvents(events);
+            //ViewBag.registrations = GetRegistrations(events);
+            //ViewBag.users = GetEventsUsers(ViewBag.registrations);
 
 
             ViewBag.start = start != null ? ((DateTime)start).ToString("dd/M/yyyy") : null;
             ViewBag.end = end != null ? ((DateTime)end).ToString("dd/M/yyyy") : null;
         }
 
-        private List<Registration> GetRegistrations(List<Models.Event>events)
+        private List<Models.Event> AddUsersToEvents(List<Event> events)
         {
-            IEnumerable<string> eventIds = events.Select(x => x.Id).ToList();
-            List<Registration> registrations = Db.Registrations.Where(r => eventIds.Contains(r.EventId)).ToList();
-            return registrations;
-        }
-
-        private List<dynamic> GetEventsUsers(List<Registration> registrations)
-        {
-            
-            IEnumerable<string> userIds = registrations.Select(u => u.UserId).ToList();
-
-            List<ApplicationUser> users = Db.Users.Where(m => userIds.Contains(m.Id)).ToList();
-
-            List<dynamic> result = new List<dynamic>();
-
-            foreach (ApplicationUser user in users)
-            {
-                List<Registration> userRegistrations = registrations.Where(r => user.Id == r.UserId).ToList();
-                dynamic userResult = new
-                {
-                    Id = user.Id,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                };
-                result.Add(userResult);
+            foreach (Models.Event currentEvent in events) {
+                currentEvent.RegisteredUsers = new List<ApplicationUser>();
+                // Get event registrations
+                List<Registration> registrations = Db.Registrations.Where(r => r.EventId == currentEvent.Id).ToList();           
+                currentEvent.RegisteredUsers = registrations.Select(m => m.User).Distinct().ToList();
             }
-            
-            return result;
+
+            return events;
         }
     }
 }

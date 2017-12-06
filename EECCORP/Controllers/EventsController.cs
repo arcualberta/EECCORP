@@ -48,7 +48,7 @@ namespace EECCORP.Controllers
             ApplicationUser user = UserManager.FindById(userId);
             if (user.IsEligible)
             {
-                List<Models.Event> events = GoogleService.GetEvents();
+                List<Models.Event> events = GoogleService.GetEventsFromWindow();
                 List<Registration> registrations = new List<Registration>();
                 foreach (Models.Event currentEvent in events)
                 {
@@ -70,7 +70,7 @@ namespace EECCORP.Controllers
         {
             Dictionary<int, int> previousRegistrations = new Dictionary<int, int>();
             string userId = User.Identity.GetUserId();
-            List<Models.Event> events = GoogleService.GetEvents();
+            List<Models.Event> events = GoogleService.GetEventsFromWindow();
             bool onlyTwoEventsPerWeek = true;
 
             foreach (Models.Event currentEvent in frontEndEvents)
