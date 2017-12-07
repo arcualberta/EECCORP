@@ -41,7 +41,10 @@
                 @foreach( EECCORP.Models.Event currentEvent in Model.Events)
                 {
                     <li>
-                        @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)                     
+                        <span>
+                            @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)
+                        </span>
+                        <span>@Html.Raw(currentEvent.Start)</span>
                     </li>
                 }
             </ul>
