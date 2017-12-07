@@ -46,7 +46,6 @@
             <ul>
                 @foreach (var user in Model.RegisteredUsers)
                 {
-                    //http://localhost:60130/Dashboard/Details?Length=7
                     <li> 
                         @Html.ActionLink(user.UserName, "Details", "Account", new { id = user.Id }, null)                        
                     </li>
