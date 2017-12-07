@@ -40,24 +40,32 @@ namespace EECCORP.Controllers
             return View();
         }
 
+        public ActionResult Event(string id)
+        {
+            Models.Event currentEvent = GoogleService.GetEvent(id);
+            currentEvent.RegisteredUsers = GetRegisteredUsers(currentEvent);
+            return View("View", currentEvent);
+        }
+
         private void SetViewbag(List<Models.Event> events, DateTime? start = null, DateTime? end = null)
         {
             ViewBag.events = AddUsersToEvents(events);
-            //ViewBag.registrations = GetRegistrations(events);
-            //ViewBag.users = GetEventsUsers(ViewBag.registrations);
-
-
             ViewBag.start = start != null ? ((DateTime)start).ToString("dd/M/yyyy") : null;
             ViewBag.end = end != null ? ((DateTime)end).ToString("dd/M/yyyy") : null;
+        }
+
+        private ICollection<ApplicationUser> GetRegisteredUsers(Models.Event currentEvent)
+        {
+            currentEvent.RegisteredUsers = new List<ApplicationUser>();
+            // Get event registrations
+            List<Registration> registrations = Db.Registrations.Where(r => r.EventId == currentEvent.Id).ToList();
+            return registrations.Select(m => m.User).Distinct().ToList();            
         }
 
         private List<Models.Event> AddUsersToEvents(List<Event> events)
         {
             foreach (Models.Event currentEvent in events) {
-                currentEvent.RegisteredUsers = new List<ApplicationUser>();
-                // Get event registrations
-                List<Registration> registrations = Db.Registrations.Where(r => r.EventId == currentEvent.Id).ToList();           
-                currentEvent.RegisteredUsers = registrations.Select(m => m.User).Distinct().ToList();
+                currentEvent.RegisteredUsers = GetRegisteredUsers(currentEvent);
             }
 
             return events;

@@ -21,28 +21,39 @@
     @Html.AntiForgeryToken()
     <div class="row">
         <div class="col-md-12">
-            <div class="form-group">
-                <div class="input-daterange input-group" id="datepicker">
-                    <input type="text" class="input-sm form-control" name="start" placeholder="Start" value="@(ViewBag.start)"/>
-<span class="input-group-addon">to</span>
-                    <input type="text" class="input-sm form-control" name="end" placeholder="End" value="@(ViewBag.end)"/>
+
+            <div class="report-controls text-right">
+                <div class="form-group">
+                    <div class="input-daterange input-group" id="datepicker">
+                        <span class="input-group-addon">From</span>
+                        <input type="text" class="input-sm form-control" name="start" placeholder="Start" value="@(ViewBag.start)"/>
+                        <span class="input-group-addon">to</span>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End" value="@(ViewBag.end)"/>
+                    </div>                                      
                 </div>
-                <div>
-                    <button class="btn btn-primary">Generate</button>
+
+                <div class="form-group">
+                    <button class="btn btn-default">Generate</button>
                 </div>
             </div>
+            
             <div id="report-container">
-                <ul>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Event</th>
+                        <th>Date and time</th>
+                        <th>Enrolled students</th>
+                    </tr>
                     @foreach (var currentEvent in ViewBag.events)
                     {
-                    <li>
-                        <b>@currentEvent.Summary</b>
-                        <span>@currentEvent.Start.ToString("dd/M/yyyy")</span>
-                        <span>@currentEvent.RegisteredUsers.Count</span>
-                    </li>
+                        <tr>
+                            <td><a href="/Dashboard/Event/@currentEvent.Id">@currentEvent.Summary</a></td>
+                            <td>@currentEvent.Start.ToString("dd/M/yyyy HH:mm")</td>
+                            <td>@currentEvent.RegisteredUsers.Count</td>
+                        </tr>
+
                     }
-                    
-                </ul>
+                </table>
             </div>
         </div>
     </div>

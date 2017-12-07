@@ -52,6 +52,13 @@ namespace EECCORP.Controllers
             }
         }
 
+
+        public ActionResult Details(string id)
+        {
+            ApplicationUser user = UserManager.FindById(id);
+            return View("View", user);
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]

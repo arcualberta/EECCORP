@@ -1,0 +1,62 @@
+﻿using System.Web.Mvc.Html;
+
+@model EECCORP.Models.Event
+
+
+<h4>Event</h4>
+<hr />
+<dl class="dl-horizontal">
+    <dt>
+        @Html.DisplayNameFor(model => model.Summary)
+    </dt>
+    
+    <dd>
+        @Html.DisplayFor(model => model.Summary)
+    </dd>
+    
+    <dt>
+        @Html.DisplayNameFor(model => model.Description)
+    </dt>
+    
+    <dd>
+        @Html.DisplayFor(model => model.Description)
+    </dd>
+    
+    <dt>
+        @Html.DisplayNameFor(model => model.Start)
+    </dt>
+    
+    <dd>
+        @Html.DisplayFor(model => model.Start)
+    </dd>
+
+    <dt>
+        @Html.Label("Registered students")
+    </dt>
+
+    <dd>
+        @Html.DisplayFor(model => model.RegisteredUsers.Count)
+    </dd>   
+    
+
+    @if (Model.RegisteredUsers.Count > 0)
+    {
+        <dt></dt>
+        <dd>
+            <ul>
+                @foreach (var user in Model.RegisteredUsers)
+                {
+                    //http://localhost:60130/Dashboard/Details?Length=7
+                    <li> 
+                        @Html.ActionLink(user.UserName, "Details", "Account", new { id = user.Id }, null)                        
+                    </li>
+                }
+            </ul>
+        </dd>
+    }
+
+    
+
+</dl>
+    
+    

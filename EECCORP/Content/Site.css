@@ -22,3 +22,7 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.report-controls {
+    padding: 15px 0px;
+}
