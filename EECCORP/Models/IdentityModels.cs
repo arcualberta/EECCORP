@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EECCORP.Models
 {
@@ -13,6 +14,8 @@ namespace EECCORP.Models
 
         public bool IsEligible { get; set; } = false;
         public virtual ICollection<Registration> Registrations { get; set; }
+        [NotMapped]
+        public ICollection<Models.Event> Events { get; set; }
 
         public ApplicationUser() : base()
         {

@@ -28,6 +28,8 @@ namespace EECCORP.Services
         private CultureInfo CultureInfo = new CultureInfo("en-ca");
         private System.Globalization.Calendar _Calendar;
         private HttpContextBase HttpContextBase;
+        private ApplicationDbContext _Db;
+        private ApplicationDbContext Db { get { if (_Db == null) _Db = new ApplicationDbContext(); return _Db; } }
 
         public GoogleService(HttpContextBase httpContextBase)
         {
@@ -113,6 +115,21 @@ namespace EECCORP.Services
                 }
             }
             return responseEvents;
+        }
+
+        public List<Models.Event> GetUsersEvents(ApplicationUser user)
+        {
+            List<Models.Event> result = new List<Models.Event>();
+            List<Registration> registrations = Db.Registrations.Where(r => r.UserId == user.Id).ToList();
+
+            // Fetch all events from google individually
+            foreach (Registration registration in registrations)
+            {
+                Models.Event currentEvent = GetEvent(registration.EventId);
+                result.Add(currentEvent);
+            }
+
+            return result;
         }
 
         private CalendarService GetService()

@@ -1,6 +1,4 @@
-﻿using System.Web.Mvc.Html;
-
-@model EECCORP.Models.Event
+﻿@model EECCORP.Models.Event
 
 
 <h4>Event</h4>
@@ -31,28 +29,20 @@
     </dd>
 
     <dt>
-        @Html.Label("Registered students")
+        Registered students (@Html.Raw(Model.RegisteredUsers.Count))
     </dt>
-
-    <dd>
-        @Html.DisplayFor(model => model.RegisteredUsers.Count)
-    </dd>   
     
-
-    @if (Model.RegisteredUsers.Count > 0)
-    {
-        <dt></dt>
-        <dd>
-            <ul>
-                @foreach (var user in Model.RegisteredUsers)
-                {
-                    <li> 
-                        @Html.ActionLink(user.UserName, "Details", "Account", new { id = user.Id }, null)                        
-                    </li>
-                }
-            </ul>
-        </dd>
-    }
+    <dd>
+        <ul>
+            @foreach (var user in Model.RegisteredUsers)
+            {
+                <li> 
+                    @Html.ActionLink(user.UserName, "Details", "Account", new { id = user.Id }, null)                        
+                </li>
+            }
+        </ul>
+    </dd>
+    
 
     
 

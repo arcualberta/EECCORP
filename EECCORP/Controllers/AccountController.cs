@@ -8,7 +8,10 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using EECCORP.Services;
+
 using EECCORP.Models;
+using System.Collections.Generic;
 
 namespace EECCORP.Controllers
 {
@@ -17,6 +20,9 @@ namespace EECCORP.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private GoogleService _GoogleService;
+        private GoogleService GoogleService { get { if (_GoogleService == null) { _GoogleService = new GoogleService(HttpContext); } return _GoogleService; } }
+        
 
         public AccountController()
         {
@@ -56,6 +62,7 @@ namespace EECCORP.Controllers
         public ActionResult Details(string id)
         {
             ApplicationUser user = UserManager.FindById(id);
+            user.Events = GoogleService.GetUsersEvents(user);
             return View("View", user);
         }
 
@@ -429,6 +436,8 @@ namespace EECCORP.Controllers
 
             base.Dispose(disposing);
         }
+
+       
 
         #region Helpers
         // Used for XSRF protection when adding external logins
