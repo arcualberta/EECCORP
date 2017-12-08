@@ -37,7 +37,13 @@
             @foreach (var user in Model.RegisteredUsers)
             {
                 <li> 
-                    @Html.ActionLink(user.UserName, "Details", "Account", new { id = user.Id }, null)                        
+                    <span>
+                        <img src="@user.ImageUrl" />
+                    </span>
+                    <span>
+                        @Html.ActionLink(user.Name, "Details", "Account", new { id = user.Id }, null)                        
+                    </span>
+                    
                 </li>
             }
         </ul>

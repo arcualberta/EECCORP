@@ -10,6 +10,16 @@
     <h4>ApplicationUser</h4>
     <hr />
     <dl class="dl-horizontal">
+
+        <dt>            
+           <img src="@Url.Content(Model.ImageUrl)" alt="Image" />            
+        </dt>
+
+        <dd>
+            
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
         <dt>
             @Html.DisplayNameFor(model => model.IsEligible)
         </dt>
@@ -24,14 +34,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.UserName)
         </dd>
 
         <dt>Registered courses (@Html.Raw(Model.Events.Count))</dt>
