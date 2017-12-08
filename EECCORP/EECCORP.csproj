@@ -258,6 +258,14 @@
     <Compile Include="Migrations\201712061717532_AddRelationUserRegistrations.Designer.cs">
       <DependentUpon>201712061717532_AddRelationUserRegistrations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712081644463_AddImageUrlToIdentityModel.cs" />
+    <Compile Include="Migrations\201712081644463_AddImageUrlToIdentityModel.Designer.cs">
+      <DependentUpon>201712081644463_AddImageUrlToIdentityModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712081650069_AddNameToIdentityModel.cs" />
+    <Compile Include="Migrations\201712081650069_AddNameToIdentityModel.Designer.cs">
+      <DependentUpon>201712081650069_AddNameToIdentityModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -467,6 +475,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712061717532_AddRelationUserRegistrations.resx">
       <DependentUpon>201712061717532_AddRelationUserRegistrations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712081644463_AddImageUrlToIdentityModel.resx">
+      <DependentUpon>201712081644463_AddImageUrlToIdentityModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712081650069_AddNameToIdentityModel.resx">
+      <DependentUpon>201712081650069_AddNameToIdentityModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -14,6 +14,8 @@ namespace EECCORP.Models
 
         public bool IsEligible { get; set; } = false;
         public virtual ICollection<Registration> Registrations { get; set; }
+        public string ImageUrl { get; set; }
+        public string Name { get; set; }
         [NotMapped]
         public ICollection<Models.Event> Events { get; set; }
 

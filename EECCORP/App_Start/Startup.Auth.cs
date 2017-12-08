@@ -7,6 +7,8 @@ using Microsoft.Owin.Security.Google;
 using Owin;
 using EECCORP.Models;
 using System.Configuration;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace EECCORP
 {
@@ -59,11 +61,31 @@ namespace EECCORP
             //   appId: "",
             //   appSecret: "");
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            GoogleOAuth2AuthenticationOptions googleOptions = new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = ConfigurationManager.AppSettings["Authentication:Google:ClientId"],
                 ClientSecret = ConfigurationManager.AppSettings["Authentication:Google:Secret"]
-            });
+            };
+
+            googleOptions.Provider = new GoogleOAuth2AuthenticationProvider()
+            {
+                // [START read_google_profile_image_url]
+                // After OAuth authentication completes successfully,
+                // read user's profile image URL from the profile
+                // response data and add it to the current user identity
+                OnAuthenticated = context =>
+                {
+                    var profileUrl = context.User["image"]["url"].ToString();
+                    var displayName = context.User["displayName"].ToString();
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Uri, profileUrl));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Name, displayName));
+
+                    return Task.FromResult(0);
+                }
+                // [END read_google_profile_image_url]
+            };
+
+            app.UseGoogleAuthentication(googleOptions);
         }
     }
 }

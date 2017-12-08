@@ -58,6 +58,11 @@ namespace EECCORP.Controllers
             }
         }
 
+        public ActionResult Index()
+        {
+            //UserManager.FindB
+            return View();
+        }
 
         public ActionResult Details(string id)
         {
@@ -341,12 +346,19 @@ namespace EECCORP.Controllers
             {
                 return RedirectToAction("Login");
             }
-
+            //var picture = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Uri);
+            //ApplicationUser user = UserManager.FindById(User.Identity.GetUserId());
+            //user.ImageUrl = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Uri);
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
+                    ApplicationUser user = UserManager.FindByEmail(loginInfo.Email);
+                    user.ImageUrl = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Uri);
+                    user.Name = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Name);
+                    UserManager.Update(user);
+
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
