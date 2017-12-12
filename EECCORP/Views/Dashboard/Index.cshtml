@@ -19,6 +19,13 @@
 @using (Html.BeginForm("", "Dashboard", FormMethod.Post, new { @class = "form-inline" }))
 {
     @Html.AntiForgeryToken()
+
+    <div>
+        @Html.ActionLink("Download report",
+       "",
+       null,
+       new { @id="download-report"})
+    </div>
     <div class="row">
         <div class="col-md-12">
 
@@ -26,14 +33,23 @@
                 <div class="form-group">
                     <div class="input-daterange input-group" id="datepicker">
                         <span class="input-group-addon">From</span>
-                        <input type="text" class="input-sm form-control" name="start" placeholder="Start" value="@(ViewBag.start)"/>
+                        <input type="text" class="input-sm form-control" name="start" placeholder="Start" value='@(ViewBag.start.ToString("dd/M/yyyy"))'/>
                         <span class="input-group-addon">to</span>
-                        <input type="text" class="input-sm form-control" name="end" placeholder="End" value="@(ViewBag.end)"/>
+                        <input type="text" class="input-sm form-control" name="end" placeholder="End" value='@(ViewBag.end.ToString("dd/M/yyyy"))'/>
                     </div>                                      
                 </div>
 
                 <div class="form-group">
-                    <button class="btn btn-default">Generate</button>
+                    <button class="btn btn-default">
+                        Search 
+                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <a href="@Url.Action("DownloadEventsReport", "Dashboard", new { start = ViewBag.start, end = ViewBag.end })"  download class="btn btn-default">
+                        Download report
+                        <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                    </a>
                 </div>
             </div>
             

@@ -15,8 +15,19 @@ namespace EECCORP.Models
 
     public class Event
     {
-        public string Summary { get; set; }
-        public string Description { get; set; }
+
+        private string _Summary = "";
+        private string _Description = "";
+
+
+        public string Summary {
+            get { return _Summary == null ? "" : _Summary; }
+            set { _Summary = value; }
+        }
+        public string Description {
+            get { return _Description == null ? "" : _Description; }
+            set { _Description = value; }
+        }
         public DateTime Start { get; set; }
         public string Id { get; set; }
         public bool IsSelected { get; set; }

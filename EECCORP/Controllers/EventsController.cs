@@ -152,7 +152,7 @@ namespace EECCORP.Controllers
                 return RedirectToAction("Index");
             }
             return View();
-        }
+        }        
         
         private DateTime GetEventStart(List<Models.Event> events, Models.Event currentEvent)
         {

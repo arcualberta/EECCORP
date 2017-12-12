@@ -3,6 +3,14 @@
 
 <h4>Event</h4>
 <hr />
+
+<div>
+    @Html.ActionLink("Download report",
+                    "DownloadEventReport", "Dashboard",
+                    new { id = Model.Id},
+                    new { @download= "true" })
+</div>
+
 <dl class="dl-horizontal">
     <dt>
         @Html.DisplayNameFor(model => model.Summary)
@@ -47,8 +55,7 @@
                 </li>
             }
         </ul>
-    </dd>
-    
+    </dd>        
 
     
 
