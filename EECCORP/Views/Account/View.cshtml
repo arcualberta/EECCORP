@@ -9,6 +9,16 @@
 <div>
     <h4>ApplicationUser</h4>
     <hr />
+
+    <div class="report-controls text-right">        
+        <div class="form-group">
+            <a href="@Url.Action("DownloadUserReport", "Account", new { id = Model.Id })" download class="btn btn-default">
+                Download report
+                <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+            </a>
+        </div>
+    </div>
+
     <dl class="dl-horizontal">
 
         <dt>            

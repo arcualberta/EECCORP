@@ -11,7 +11,7 @@ namespace EECCORP.Services
         {
             for (int i = 0; i < values.Length; ++i)
             {
-                values[i] = string.Format("\"{0}\",", values[i].Replace("\"", "\"\""));
+                values[i] = string.Format("\"{0}\"", values[i].Replace("\"", "\"\""));
             }
             return String.Join(",", values) + "\n";
         }

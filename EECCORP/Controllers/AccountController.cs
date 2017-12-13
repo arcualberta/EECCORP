@@ -22,7 +22,18 @@ namespace EECCORP.Controllers
         private ApplicationUserManager _userManager;
         private GoogleService _GoogleService;
         private GoogleService GoogleService { get { if (_GoogleService == null) { _GoogleService = new GoogleService(HttpContext); } return _GoogleService; } }
-        
+        private HelperService _HelperService;
+        private HelperService HelperService
+        {
+            get
+            {
+                if (_HelperService == null)
+                {
+                    _HelperService = new HelperService();
+                }
+                return _HelperService;
+            }
+        }
 
         public AccountController()
         {
@@ -69,6 +80,27 @@ namespace EECCORP.Controllers
             ApplicationUser user = UserManager.FindById(id);
             user.Events = GoogleService.GetUsersEvents(user);
             return View("View", user);
+        }
+
+        public FileContentResult DownloadUserReport(string id)
+        {
+            ApplicationUser user = UserManager.FindById(id);
+            string csv = GetUserReport(user);
+            string fileName = HelperService.GetReportFileName(user.Name);
+            return File(new System.Text.UTF8Encoding().GetBytes(csv), "text/csv", fileName);
+        }
+
+        private string GetUserReport(ApplicationUser user)
+        {
+            string report = "";
+            user.Events = GoogleService.GetUsersEvents(user);
+            foreach (Models.Event currentEvent in user.Events)
+            {
+                report += HelperService.GetCSVLine(new string[] {
+                    currentEvent.Summary,
+                    currentEvent.Start.ToString("dd/M/yyyy") });                
+            }
+            return report;
         }
 
         //
