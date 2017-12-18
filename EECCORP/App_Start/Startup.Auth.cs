@@ -9,11 +9,17 @@ using EECCORP.Models;
 using System.Configuration;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace EECCORP
 {
     public partial class Startup
     {
+
+        private ApplicationDbContext _Db;
+        private ApplicationDbContext Db { get { if (_Db == null) _Db = new ApplicationDbContext(); return _Db; } }
+
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
@@ -86,6 +92,26 @@ namespace EECCORP
             };
 
             app.UseGoogleAuthentication(googleOptions);
+            CreateRolesAndUser();
+        }
+
+        private void CreateRolesAndUser()
+        {            
+            RoleManager<IdentityRole> roleManager = 
+                new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(Db));
+            UserManager<ApplicationUser> userManager = 
+                new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(Db));
+
+            string adminRoleName = "Admin";
+
+            if (!roleManager.RoleExists(adminRoleName))
+            {
+                IdentityRole adminRole = new IdentityRole();
+                adminRole.Name = adminRoleName;
+                roleManager.Create(adminRole);
+            }
+
+           
         }
     }
 }

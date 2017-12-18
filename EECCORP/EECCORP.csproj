@@ -266,6 +266,10 @@
     <Compile Include="Migrations\201712081650069_AddNameToIdentityModel.Designer.cs">
       <DependentUpon>201712081650069_AddNameToIdentityModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712141640181_RemoveEventFromApplicationDbContext.cs" />
+    <Compile Include="Migrations\201712141640181_RemoveEventFromApplicationDbContext.Designer.cs">
+      <DependentUpon>201712141640181_RemoveEventFromApplicationDbContext.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -481,6 +485,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712081650069_AddNameToIdentityModel.resx">
       <DependentUpon>201712081650069_AddNameToIdentityModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712141640181_RemoveEventFromApplicationDbContext.resx">
+      <DependentUpon>201712141640181_RemoveEventFromApplicationDbContext.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

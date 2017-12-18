@@ -10,6 +10,7 @@ using EECCORP.Extensions;
 
 namespace EECCORP.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DashboardController : Controller
     {
         private GoogleService _GoogleService;

@@ -377,10 +377,18 @@ namespace EECCORP.Controllers
             if (loginInfo == null)
             {
                 return RedirectToAction("Login");
+            } else if (UserManager.FindByEmail(loginInfo.Email) == null)
+            {
+                
+                var user = new ApplicationUser { UserName = loginInfo.Email, Email = loginInfo.Email };
+                UserManager.Create(user);
+                UserManager.AddLogin(user.Id, loginInfo.Login);
+                if (UserManager.Users.Count() == 1)
+                {
+                    UserManager.AddToRole(user.Id, "Admin");
+                }
             }
-            //var picture = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Uri);
-            //ApplicationUser user = UserManager.FindById(User.Identity.GetUserId());
-            //user.ImageUrl = loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Uri);
+
             // Sign in the user with this external login provider if the user already has a login
             var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
@@ -404,6 +412,11 @@ namespace EECCORP.Controllers
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
+
+        //private testc()
+        //{
+
+        //}
 
         //
         // POST: /Account/ExternalLoginConfirmation
