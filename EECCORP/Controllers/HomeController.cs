@@ -10,6 +10,7 @@ namespace EECCORP.Controllers
     {
         public ActionResult Index()
         {
+            ViewBag.ReturnUrl = Url.Action("Index", "Events");
             return View();
         }
 

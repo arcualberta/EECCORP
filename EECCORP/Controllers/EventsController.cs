@@ -22,6 +22,7 @@ using EECCORP.Services;
 
 namespace EECCORP.Controllers
 {
+    [Authorize]
     public class EventsController : Controller
     {
 
@@ -39,7 +40,7 @@ namespace EECCORP.Controllers
         private GoogleService GoogleService { get { if (_GoogleService == null) { _GoogleService = new GoogleService(HttpContext); } return _GoogleService; } }
 
 
-        // GET: Event
+        // GET: Event        
         public ActionResult Index()
         {
             //XXX Get registered events
