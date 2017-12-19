@@ -16,15 +16,24 @@
         <hr />
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                
+
                 <div class="controls">
-                    @Model.IsFoAStudentQuestion
-                    @Html.EditorFor(model => model.IsFoAStudent, new { htmlAttributes = new { @class = "form-control" } })
-                    @Model.IsEnrolledQuestion
-                    @Html.EditorFor(model => model.IsEnrolled, new { htmlAttributes = new { @class = "form-control" } })
+
+                    <div class="form-check">
+                        <label class="form-check-label">                            
+                            @Html.EditorFor(model => model.IsFoAStudent, new { htmlAttributes = new { @class = "form-control-check-input" } })
+                            @Model.IsFoAStudentQuestion
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <label class="form-check-label">                            
+                            @Html.EditorFor(model => model.IsEnrolled, new { htmlAttributes = new { @class = "form-check-input" } })
+                            @Model.IsEnrolledQuestion
+                        </label>
+                    </div>
                 </div>
 
-              
 
                 <input type="submit" value="Submit" class="btn btn-default" />
             </div>
