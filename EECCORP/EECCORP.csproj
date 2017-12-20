@@ -220,6 +220,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Attributes\AuthorizeAdminOrOwner.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
@@ -439,6 +440,7 @@
     <Content Include="Views\Dashboard\Index.cshtml" />
     <Content Include="Views\Dashboard\View.cshtml" />
     <Content Include="Views\Account\View.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

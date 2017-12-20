@@ -12,6 +12,7 @@ using EECCORP.Services;
 
 using EECCORP.Models;
 using System.Collections.Generic;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace EECCORP.Controllers
 {
@@ -69,10 +70,23 @@ namespace EECCORP.Controllers
             }
         }
 
-        public ActionResult Index()
-        {
-            //UserManager.FindB
-            return View();
+        [Authorize(Roles = "Admin")]
+        public ActionResult Index(string searchString)
+        {            
+            var context = new ApplicationDbContext();
+            var userStore = new UserStore<ApplicationUser>(context);
+
+
+            var users = userStore.Users;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u => u.Name.Contains(searchString) ||
+                    u.Email.Contains(searchString)
+                );                
+            }            
+            
+            return View(users.ToList());
         }
 
         public ActionResult Details(string id)
