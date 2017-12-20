@@ -1,7 +1,8 @@
-﻿@model IEnumerable<EECCORP.Models.ApplicationUser>
+﻿@model PagedList.IPagedList<EECCORP.Models.ApplicationUser>
+@using PagedList.Mvc;
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Users";
 }
 
 <h2>Index</h2>
@@ -18,13 +19,13 @@
     <tr>
         <th></th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Email)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Registrations)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Registrations)
         </th>
         <th></th>
     </tr>
@@ -54,3 +55,9 @@
     }
 
 </table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+

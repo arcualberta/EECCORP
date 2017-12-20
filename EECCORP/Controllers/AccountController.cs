@@ -9,10 +9,10 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using EECCORP.Services;
-
 using EECCORP.Models;
 using System.Collections.Generic;
 using Microsoft.AspNet.Identity.EntityFramework;
+using PagedList;
 
 namespace EECCORP.Controllers
 {
@@ -71,22 +71,34 @@ namespace EECCORP.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult Index(string searchString)
+        public ActionResult Index(string currentFilter, string searchString, int? page)
         {            
             var context = new ApplicationDbContext();
             var userStore = new UserStore<ApplicationUser>(context);
 
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewBag.CurrentFilter = searchString;
 
             var users = userStore.Users;
-
+            
             if (!String.IsNullOrEmpty(searchString))
             {
                 users = users.Where(u => u.Name.Contains(searchString) ||
                     u.Email.Contains(searchString)
                 );                
-            }            
-            
-            return View(users.ToList());
+            }
+
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+
+            return View(users.OrderBy(u => u.Name).ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult Details(string id)
