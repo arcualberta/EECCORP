@@ -77,9 +77,17 @@ namespace EECCORP.Controllers
 
         public ActionResult Details(string id)
         {
-            ApplicationUser user = UserManager.FindById(id);
-            user.Events = GoogleService.GetUsersEvents(user);
-            return View("View", user);
+
+            
+            if ( User.IsInRole("Admin") || User.Identity.GetUserId() == id )
+            {
+                ApplicationUser user = UserManager.FindById(id);
+                user.Events = GoogleService.GetUsersEvents(user);
+                return View("View", user);
+            }
+
+            return RedirectToAction("Index", "Home");
+            
         }
 
         public FileContentResult DownloadUserReport(string id)

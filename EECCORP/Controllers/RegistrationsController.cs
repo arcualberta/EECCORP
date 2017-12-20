@@ -10,6 +10,7 @@ using EECCORP.Models;
 
 namespace EECCORP.Controllers
 {
+    [Authorize]
     public class RegistrationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

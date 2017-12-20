@@ -45,7 +45,7 @@ namespace EECCORP.Controllers
         {
             //XXX Get registered events
             
-            string userId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            string userId = User.Identity.GetUserId();
             ApplicationUser user = UserManager.FindById(userId);
             if (user.IsEligible)
             {
@@ -53,7 +53,9 @@ namespace EECCORP.Controllers
                 List<Registration> registrations = new List<Registration>();
                 foreach (Models.Event currentEvent in events)
                 {
-                    Registration registration = Db.Registrations.SingleOrDefault(i => i.EventId == currentEvent.Id);
+                    Registration registration = Db.Registrations.SingleOrDefault(
+                        i => i.EventId == currentEvent.Id && i.UserId == userId
+                        );
                     currentEvent.IsSelected = registration != null;                    
                 }
                 return View(events);
