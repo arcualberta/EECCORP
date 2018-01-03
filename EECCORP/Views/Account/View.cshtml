@@ -1,4 +1,4 @@
-﻿@model EECCORP.Models.ApplicationUser
+﻿@model EECCORP.Models.UserDetailsViewModel
 
 @{
     ViewBag.Title = "View";
@@ -21,22 +21,15 @@
 
     <dl class="dl-horizontal">
 
-        <dt>            
-           <img src="@Url.Content(Model.ImageUrl)" alt="Image" />            
+        <dt>
+            <img src="@Url.Content(Model.ImageUrl)" alt="Image" />
         </dt>
 
         <dd>
-            
+
             @Html.DisplayFor(model => model.Name)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsEligible)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsEligible)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Email)
@@ -46,19 +39,36 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
 
+        @if (User.IsInRole("Admin"))
+    {
+        <dt>
+            @Html.LabelFor(model => model.IsAdmin)
+        </dt>
+        <dd>
+            @Html.EditorFor(model => model.IsAdmin)
+        </dd>
+        <dt>
+            @Html.LabelFor(model => model.Delete)
+        </dt>
+        <dd>
+            @Html.EditorFor(model => model.Delete)
+        </dd>
+}
+
+
         <dt>Registered courses (@Html.Raw(Model.Events.Count))</dt>
-        
+
         <dd>
             <ul>
-                @foreach( EECCORP.Models.Event currentEvent in Model.Events)
-                {
-                    <li>
-                        <span>
-                            @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)
-                        </span>
-                        <span>@Html.Raw(currentEvent.Start)</span>
-                    </li>
-                }
+                @foreach (EECCORP.Models.Event currentEvent in Model.Events)
+            {
+                <li>
+                    <span>
+                        @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)
+                    </span>
+                    <span>@Html.Raw(currentEvent.Start)</span>
+                </li>
+        }
             </ul>
         </dd>
     </dl>

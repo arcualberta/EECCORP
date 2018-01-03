@@ -99,8 +99,8 @@ namespace EECCORP
         {            
             RoleManager<IdentityRole> roleManager = 
                 new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(Db));
-            UserManager<ApplicationUser> userManager = 
-                new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(Db));
+            //UserManager<ApplicationUser> userManager = 
+            //    new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(Db));
 
             string adminRoleName = "Admin";
 

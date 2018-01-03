@@ -102,14 +102,27 @@ namespace EECCORP.Controllers
         }
 
         public ActionResult Details(string id)
-        {
-
-            
+        {            
             if ( User.IsInRole("Admin") || User.Identity.GetUserId() == id )
             {
                 ApplicationUser user = UserManager.FindById(id);
                 user.Events = GoogleService.GetUsersEvents(user);
-                return View("View", user);
+
+                ApplicationDbContext db = new ApplicationDbContext();
+                UserManager<ApplicationUser> userManager =
+                    new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
+
+
+                UserDetailsViewModel userDetails = new UserDetailsViewModel(
+                    id: user.Id,
+                    name: user.Name,
+                    imageUrl: user.ImageUrl,
+                    registrationCount: user.Registrations.Count,
+                    isAdmin: userManager.IsInRole(user.Id, "Admin"),
+                    email: user.Email,
+                    events: user.Events.ToList()
+                    );
+                return View("View", userDetails);
             }
 
             return RedirectToAction("Index", "Home");
@@ -234,7 +247,7 @@ namespace EECCORP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.Email.ToLower().EndsWith("@ualberta.ca"))
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
@@ -413,14 +426,19 @@ namespace EECCORP.Controllers
                 return RedirectToAction("Login");
             } else if (UserManager.FindByEmail(loginInfo.Email) == null)
             {
-                
-                var user = new ApplicationUser { UserName = loginInfo.Email, Email = loginInfo.Email };
-                UserManager.Create(user);
-                UserManager.AddLogin(user.Id, loginInfo.Login);
-                if (UserManager.Users.Count() == 1)
+                if (loginInfo.Email.ToLower().EndsWith("@ualberta.ca"))
                 {
-                    UserManager.AddToRole(user.Id, "Admin");
-                }
+                    var user = new ApplicationUser { UserName = loginInfo.Email, Email = loginInfo.Email };
+                    UserManager.Create(user);
+                    UserManager.AddLogin(user.Id, loginInfo.Login);
+                    if (UserManager.Users.Count() == 1)
+                    {
+                        UserManager.AddToRole(user.Id, "Admin");
+                    }
+                } else
+                {
+                    return View("UalbertaRequired");
+                }    
             }
 
             // Sign in the user with this external login provider if the user already has a login
@@ -439,11 +457,13 @@ namespace EECCORP.Controllers
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
                 case SignInStatus.Failure:
+                    // Something wrong with authentication
                 default:
-                    // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                    return View("Lockout");
+                    //// If the user does not have an account, then prompt the user to create an account
+                    //ViewBag.ReturnUrl = returnUrl;
+                    //ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                    //return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
 
@@ -464,7 +484,7 @@ namespace EECCORP.Controllers
                 return RedirectToAction("Index", "Manage");
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.Email.ToLower().EndsWith("ualberta.ca"))
             {
                 // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
