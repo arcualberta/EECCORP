@@ -129,6 +129,25 @@ namespace EECCORP.Controllers
             
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public JsonResult ToggleAdmin(string id, bool isAdmin)
+        {
+            
+            IdentityResult identityResult = isAdmin ? 
+                UserManager.AddToRole(id, "Admin") : 
+                UserManager.RemoveFromRole(id, "Admin");
+
+            JsonResult jsonResult = Json(new
+            {
+                Id = id,
+                IsAdmmin = isAdmin,
+                Success = identityResult.Succeeded
+            });
+
+            return jsonResult;
+        }
+
         public FileContentResult DownloadUserReport(string id)
         {
             ApplicationUser user = UserManager.FindById(id);

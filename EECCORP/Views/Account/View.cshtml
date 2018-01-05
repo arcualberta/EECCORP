@@ -3,77 +3,121 @@
 @{
     ViewBag.Title = "View";
 }
+@section scripts {
+<script>
+    $().ready(function () {
+        var userId = '@Model.Id';
+        var isAdmin = @Model.IsAdmin.ToString().ToLower();
+        var toggleButton = $("#toggle-admin");
 
-<h2>View</h2>
+        (function updateButtonText(toggleButton, isAdmin) {
 
-<div>
-    <h4>ApplicationUser</h4>
-    <hr />
+            toggleButtonText = "Administrator priviledges";
 
-    <div class="report-controls text-right">        
-        <div class="form-group">
-            <a href="@Url.Action("DownloadUserReport", "Account", new { id = Model.Id })" download class="btn btn-default">
-                Download report
-                <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-            </a>
-        </div>
-    </div>
+            toggleButtonText = (isAdmin ? "Remove " : "Add ") + toggleButtonText;
 
-    <dl class="dl-horizontal">
+            toggleButton.text(toggleButtonText)
+        })(toggleButton, isAdmin)
 
-        <dt>
-            <img src="@Url.Content(Model.ImageUrl)" alt="Image" />
-        </dt>
+        
 
-        <dd>
-
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        @if (User.IsInRole("Admin"))
-    {
-        <dt>
-            @Html.LabelFor(model => model.IsAdmin)
-        </dt>
-        <dd>
-            @Html.EditorFor(model => model.IsAdmin)
-        </dd>
-        <dt>
-            @Html.LabelFor(model => model.Delete)
-        </dt>
-        <dd>
-            @Html.EditorFor(model => model.Delete)
-        </dd>
+        toggleButton.click(function () {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ToggleAdmin", "Account")',
+                data: {
+                    id: userId,
+                    isAdmin: !isAdmin
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    isAdmin = data.isAdmin
+                    toggleButton(toggleButton, isAdmin)
+                }
+                
+            })          
+        });
+    })
+</script>
 }
 
+    <h2>View</h2>
 
-        <dt>Registered courses (@Html.Raw(Model.Events.Count))</dt>
+    <div>
+        <h4>ApplicationUser</h4>
+        <hr />
 
-        <dd>
-            <ul>
-                @foreach (EECCORP.Models.Event currentEvent in Model.Events)
+        <div class="report-controls text-right">
+
+            <div class="form-group">
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="#" id="toggle-admin" class="btn btn-default"></a>
+                }
+
+                <a href="@Url.Action("DownloadUserReport", "Account", new { id = Model.Id })" download class="btn btn-default">
+                    Download report
+                    <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
+                </a>
+            </div>
+        </div>
+
+        <dl class="dl-horizontal">
+
+            <dt>
+                <img src="@Url.Content(Model.ImageUrl)" alt="Image" />
+            </dt>
+
+            <dd>
+
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+
+            @if (User.IsInRole("Admin"))
             {
-                <li>
-                    <span>
-                        @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)
-                    </span>
-                    <span>@Html.Raw(currentEvent.Start)</span>
-                </li>
-        }
-            </ul>
-        </dd>
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+                <dt>
+                    @Html.LabelFor(model => model.IsAdmin)
+                </dt>
+                <dd>
+                    @Html.EditorFor(model => model.IsAdmin)
+                </dd>
+                <dt>
+                    @Html.LabelFor(model => model.Delete)
+                </dt>
+                <dd>
+                    @Html.EditorFor(model => model.Delete)
+                </dd>
+            }
+
+
+            <dt>Registered courses (@Html.Raw(Model.Events.Count))</dt>
+
+            <dd>
+                <ul>
+                    @foreach (EECCORP.Models.Event currentEvent in Model.Events)
+                    {
+                        <li>
+                            <span>
+                                @Html.ActionLink(currentEvent.Summary, "Event", "Dashboard", new { id = currentEvent.Id }, null)
+                            </span>
+                            <span>@Html.Raw(currentEvent.Start)</span>
+                        </li>
+                    }
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
